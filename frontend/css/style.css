@@ -1,6 +1,3 @@
-
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
 :root {
     --background: #f4f7fc;
     --surface: #ffffff;
@@ -19,17 +16,27 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     background: var(--background);
     color: var(--text);
-    font-family: "Inter", Arial, sans-serif;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
     line-height: 1.6;
 }
 
 button,
 input {
     font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(49, 87, 213, 0.25);
+    outline-offset: 2px;
 }
 
 .topbar {
@@ -62,7 +69,7 @@ input {
 }
 
 .container {
-    width: min(920px, 92%);
+    width: min(960px, 92%);
     margin: 0 auto;
 }
 
@@ -87,7 +94,7 @@ input {
 }
 
 .hero p {
-    max-width: 630px;
+    max-width: 650px;
     margin: 0 auto;
     color: var(--muted);
     font-size: 15px;
@@ -236,6 +243,8 @@ form > label,
     color: var(--success);
 }
 
+/* Analysis results */
+
 .results {
     margin-top: 28px;
     padding-top: 24px;
@@ -250,8 +259,8 @@ form > label,
 }
 
 .results-heading h3 {
-    margin: 0;
-    font-size: 18px;
+    margin: 5px 0 0;
+    font-size: 20px;
 }
 
 .strength-badge {
@@ -261,6 +270,7 @@ form > label,
     color: var(--primary);
     font-size: 11px;
     font-weight: 800;
+    white-space: nowrap;
 }
 
 .strength-badge.very-weak,
@@ -280,11 +290,34 @@ form > label,
     background: #e9f8f0;
 }
 
+/* Score panel */
+
 .score-panel {
     margin-top: 20px;
     padding: 22px;
-    border-radius: 12px;
+    border: 1px solid #e6ebfa;
+    border-radius: 14px;
     background: #f7f9ff;
+}
+
+.score-overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.score-information {
+    flex: 1;
+    min-width: 0;
+}
+
+.metric-label {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
 .score-value {
@@ -294,8 +327,9 @@ form > label,
 }
 
 .score-value #scoreValue {
-    font-size: 40px;
+    font-size: 48px;
     font-weight: 800;
+    line-height: 1.2;
 }
 
 .score-total {
@@ -303,9 +337,26 @@ form > label,
     font-size: 15px;
 }
 
+#scoreDescription {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.chart-wrapper {
+    width: 145px;
+    height: 145px;
+    flex-shrink: 0;
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .score-track {
     height: 9px;
-    margin-top: 12px;
+    margin-top: 18px;
     overflow: hidden;
     border-radius: 20px;
     background: #e1e7f1;
@@ -319,17 +370,49 @@ form > label,
     transition: width 0.35s ease;
 }
 
-#scoreDescription {
-    margin: 9px 0 0;
+.chart-note {
+    margin: 10px 0 0;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
+}
+
+/* Metrics */
+
+.metrics-section {
+    margin-top: 25px;
+}
+
+.metrics-section h3 {
+    margin: 0 0 13px;
+    font-size: 16px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.metric-card {
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: #ffffff;
+}
+
+.metric-card strong {
+    display: block;
+    margin-top: 7px;
+    font-size: 21px;
+    overflow-wrap: anywhere;
 }
 
 .result-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 15px;
-    margin-top: 18px;
+    margin-top: 20px;
 }
 
 .result-box {
@@ -361,6 +444,8 @@ form > label,
     color: var(--muted);
     font-size: 11px;
 }
+
+/* Generator */
 
 .length-heading {
     display: flex;
@@ -433,24 +518,38 @@ form > label,
     font-size: 13px;
 }
 
+/* Education section */
+
 .education-card {
     margin: 25px 0;
-    padding: 22px 25px;
+    padding: 25px;
     border: 1px solid #dce5ff;
     border-radius: 13px;
     background: #edf2ff;
 }
 
 .education-card h2 {
-    margin: 0 0 6px;
-    font-size: 16px;
+    margin: 0 0 18px;
+    font-size: 18px;
 }
 
-.education-card p {
-    margin: 0;
-    color: #53617e;
+.education-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.education-grid strong {
     font-size: 13px;
 }
+
+.education-grid p {
+    margin: 4px 0 0;
+    color: #53617e;
+    font-size: 12px;
+}
+
+/* Footer and utilities */
 
 .footer {
     padding: 22px 15px;
@@ -465,6 +564,14 @@ form > label,
 
 .hidden {
     display: none !important;
+}
+
+/* Responsive design */
+
+@media (max-width: 700px) {
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 600px) {
@@ -488,13 +595,40 @@ form > label,
         font-size: 19px;
     }
 
+    .score-panel {
+        padding: 16px;
+    }
+
+    .score-overview {
+        gap: 12px;
+    }
+
+    .chart-wrapper {
+        width: 110px;
+        height: 110px;
+    }
+
+    .score-value #scoreValue {
+        font-size: 38px;
+    }
+
     .result-grid,
-    .category-fieldset {
+    .category-fieldset,
+    .education-grid {
         grid-template-columns: 1fr;
     }
 
     .results-heading {
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
     }
 }
