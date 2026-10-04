@@ -1,0 +1,47 @@
+# Local educational dictionary-word dataset
+# Synthetic demonstration entries only.
+# Do not add real user-submitted passwords.
+
+password
+welcome
+admin
+login
+letmein
+sunshine
+football
+dragon
+monkey
+master
+secret
+summer
+winter
+spring
+orange
+banana
+flower
+shadow
+trust
+hello
+happy
+money
+freedom
+computer
+gaming
+beautiful
+princess
+star
+coffee
+school
+college
+student
+teacher
+family
+friend
+love
+security
+internet
+mobile
+network
+cloud
+system
+account

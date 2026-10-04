@@ -1,4 +1,3 @@
-
 """
 Central Password Analysis Engine.
 
@@ -11,6 +10,7 @@ Integrates:
 6. Repeated character and substring detection
 7. Predictable prefix, suffix, year and date detection
 8. Educational theoretical entropy estimation
+9. Dictionary word detection
 
 The strength score is an educational heuristic, not a
 cryptographic measurement.
@@ -24,15 +24,23 @@ Privacy:
 from backend.services.length_analyzer import analyze_length
 from backend.services.character_analyzer import analyze_characters
 from backend.services.common_password_checker import is_common_password
+
 from backend.services.pattern_detector import (
     detect_sequences,
     detect_keyboard_patterns
 )
+
 from backend.services.repetition_analyzer import detect_repetitions
+
 from backend.services.predictable_pattern_analyzer import (
     detect_predictable_patterns
 )
+
 from backend.services.entropy_estimator import estimate_entropy
+
+from backend.services.dictionary_word_detector import (
+    detect_dictionary_words
+)
 
 
 def _calculate_strength_score(
@@ -53,8 +61,8 @@ def _calculate_strength_score(
 
     Predictable patterns reduce the score.
 
-    Entropy is deliberately excluded from this formula
-    to preserve the existing scoring behavior.
+    Entropy and dictionary-word findings are deliberately
+    excluded from this formula to preserve existing scoring.
     """
 
     password_length = length_result["length"]
@@ -88,7 +96,7 @@ def _calculate_strength_score(
 
     score = length_points + diversity_points
 
-    # Security penalties.
+    # Existing security penalties.
     if common_password:
         score -= 50
 
@@ -155,11 +163,12 @@ def analyze_password(password: str) -> dict:
 
     predictable_result = detect_predictable_patterns(password)
 
-    # Estimate theoretical entropy separately.
     entropy_result = estimate_entropy(password)
 
+    dictionary_result = detect_dictionary_words(password)
+
     # Calculate the combined educational score.
-    # Entropy does not change this existing formula.
+    # Entropy and dictionary findings do not alter the formula.
     score = _calculate_strength_score(
         length_result=length_result,
         character_result=character_result,
@@ -180,6 +189,7 @@ def analyze_password(password: str) -> dict:
     }
 
     if common_password:
+
         common_password_result["findings"].append(
             "Password matches an entry in the local common-password dataset."
         )
@@ -198,22 +208,28 @@ def analyze_password(password: str) -> dict:
         "keyboard_patterns": keyboard_result,
         "repetitions": repetition_result,
         "predictable_patterns": predictable_result,
-        "entropy": entropy_result
+        "entropy": entropy_result,
+        "dictionary_words": dictionary_result
     }
 
     # Collect findings and suggestions.
     findings = []
+
     suggestions = []
 
     for result in analyses.values():
+
         findings.extend(result.get("findings", []))
+
         suggestions.extend(result.get("suggestions", []))
 
     # Remove duplicate messages while preserving their order.
     findings = list(dict.fromkeys(findings))
+
     suggestions = list(dict.fromkeys(suggestions))
 
     if not suggestions:
+
         suggestions.append(
             "Continue using unique passwords and enable multi-factor "
             "authentication wherever available."
@@ -237,7 +253,7 @@ def analyze_password(password: str) -> dict:
         "scoring_note": (
             "This score is an educational heuristic and is not a "
             "cryptographic guarantee of password security. The theoretical "
-            "entropy estimate is reported separately and does not affect "
-            "the strength score."
+            "entropy estimate and dictionary-word findings are reported "
+            "separately and do not affect the existing strength score."
         )
     }

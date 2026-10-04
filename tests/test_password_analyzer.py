@@ -30,6 +30,7 @@ def test_all_analysis_modules_are_integrated():
         "repetitions",
         "predictable_patterns",
         "entropy",
+        "dictionary_words"
     }
 
     assert set(result["analyses"].keys()) == expected_modules
@@ -45,11 +46,25 @@ def test_entropy_result_is_integrated():
     assert entropy["character_pool_size"] == 94
 
 
-def test_entropy_does_not_change_existing_score():
+def test_dictionary_word_result_is_integrated():
+    result = analyze_password("Winter2026!")
+
+    dictionary_result = result["analyses"]["dictionary_words"]
+
+    assert dictionary_result["detected"] is True
+
+
+def test_dictionary_word_does_not_change_existing_score():
     result = analyze_password("MyUnique!Pass938")
 
     # 16 characters: 50 length points + 40 diversity points.
-    # No penalties apply to this synthetic example.
+    # No existing scoring penalties apply to this example.
+    assert result["score"] == 90
+
+
+def test_entropy_does_not_change_existing_score():
+    result = analyze_password("MyUnique!Pass938")
+
     assert result["score"] == 90
 
 
