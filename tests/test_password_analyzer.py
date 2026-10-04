@@ -1,3 +1,4 @@
+"""Tests for the central password analysis engine."""
 
 import pytest
 
@@ -27,10 +28,29 @@ def test_all_analysis_modules_are_integrated():
         "sequences",
         "keyboard_patterns",
         "repetitions",
-        "predictable_patterns"
+        "predictable_patterns",
+        "entropy",
     }
 
     assert set(result["analyses"].keys()) == expected_modules
+
+
+def test_entropy_result_is_integrated():
+    result = analyze_password("MyUnique!Pass938")
+
+    entropy = result["analyses"]["entropy"]
+
+    assert entropy["estimate_available"] is True
+    assert entropy["estimated_bits"] > 0
+    assert entropy["character_pool_size"] == 94
+
+
+def test_entropy_does_not_change_existing_score():
+    result = analyze_password("MyUnique!Pass938")
+
+    # 16 characters: 50 length points + 40 diversity points.
+    # No penalties apply to this synthetic example.
+    assert result["score"] == 90
 
 
 def test_common_password_is_flagged():
@@ -71,6 +91,7 @@ def test_empty_password_is_very_weak():
 
     assert result["score"] == 0
     assert result["strength"] == "VERY WEAK"
+    assert result["analyses"]["entropy"]["estimated_bits"] == 0.0
 
 
 def test_long_diverse_password_gets_high_score():
@@ -117,7 +138,7 @@ def test_privacy_indicators_are_enabled():
     assert result["privacy"] == {
         "password_returned": False,
         "password_stored": False,
-        "external_requests_made": False
+        "external_requests_made": False,
     }
 
 
@@ -152,3 +173,11 @@ def test_rejects_non_string_input():
 def test_rejects_none_input():
     with pytest.raises(TypeError):
         analyze_password(None)
+
+
+def test_unicode_password_keeps_other_analysis_available():
+    result = analyze_password("Café123!")
+
+    assert result["analyses"]["entropy"]["estimate_available"] is False
+    assert result["analyses"]["length"]["length"] == 8
+    assert isinstance(result["score"], int)
