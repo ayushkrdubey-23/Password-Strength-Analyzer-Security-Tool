@@ -15,7 +15,6 @@
 
     <link rel="stylesheet" href="/css/style.css">
 
-    <!-- Chart.js visualization library -->
     <script
         src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
         defer
@@ -28,55 +27,43 @@
     <header class="topbar">
         <a class="brand" href="/" aria-label="Password Security home">
             <span class="brand-icon" aria-hidden="true">🔐</span>
-            <span>PasswordGuard</span>
+            <span>Password Security Analyzer</span>
         </a>
 
-        <span class="header-label">
-            Educational Cybersecurity Tool
-        </span>
+        <span class="header-label">Privacy-first security education</span>
     </header>
 
     <main class="container">
-
-        <!-- Hero section -->
         <section class="hero">
-            <span class="eyebrow">PASSWORD SECURITY ANALYSIS</span>
+            <span class="eyebrow">PERSONAL PASSWORD SECURITY</span>
 
-            <h1>Understand your password strength.</h1>
+            <h1>Password Strength Analyzer</h1>
 
             <p>
-                Analyze password patterns, identify common weaknesses,
-                and generate stronger passwords using secure randomness.
+                Understand password weaknesses, receive practical security
+                suggestions, and generate secure passwords using a local API.
             </p>
         </section>
 
         <!-- Password analyzer -->
-        <section class="card" aria-labelledby="analyzer-title">
-
+        <section class="card analyzer-card" aria-labelledby="analyzer-title">
             <div class="section-heading">
                 <div>
                     <span class="section-number">01 / ANALYSIS</span>
-
-                    <h2 id="analyzer-title">
-                        Analyze password strength
-                    </h2>
-
+                    <h2 id="analyzer-title">Analyze password strength</h2>
                     <p>
-                        Enter a synthetic demo password to inspect its security.
+                        Use a synthetic demo password. Never enter a real
+                        account password.
                     </p>
                 </div>
 
-                <span class="heading-icon" aria-hidden="true">🔍</span>
+                <span class="heading-icon" aria-hidden="true">🛡️</span>
             </div>
 
             <form id="analyzerForm">
-
-                <label for="analysisPassword">
-                    Password to analyze
-                </label>
+                <label for="analysisPassword">Password to analyze</label>
 
                 <div class="password-input-wrapper">
-
                     <input
                         id="analysisPassword"
                         name="password"
@@ -97,22 +84,17 @@
                     >
                         Show
                     </button>
-
                 </div>
 
-                <button
-                    type="submit"
-                    class="primary-button full-width"
-                >
+                <button type="submit" class="primary-button full-width">
                     Analyze Password
                 </button>
-
             </form>
 
             <p class="privacy-note">
-                🔒 Use synthetic demo passwords only. Never enter a real
-                account password. Submitted passwords are not intentionally
-                stored by this application.
+                🔒 Submitted passwords are analyzed for this request only.
+                The history feature stores approved analysis metadata, never
+                the submitted password.
             </p>
 
             <div
@@ -128,35 +110,20 @@
                 class="results hidden"
                 aria-labelledby="results-title"
             >
-
                 <div class="results-heading">
-
                     <div>
-                        <span class="section-number">
-                            SECURITY REPORT
-                        </span>
-
-                        <h3 id="results-title">
-                            Analysis Results
-                        </h3>
+                        <span class="section-number">SECURITY REPORT</span>
+                        <h3 id="results-title">Analysis Results</h3>
                     </div>
 
-                    <span
-                        id="strengthBadge"
-                        class="strength-badge"
-                    >
+                    <span id="strengthBadge" class="strength-badge">
                         MODERATE
                     </span>
-
                 </div>
 
-                <!-- Overall score -->
                 <div class="score-panel">
-
                     <div class="score-overview">
-
                         <div class="score-information">
-
                             <span class="metric-label">
                                 OVERALL STRENGTH SCORE
                             </span>
@@ -169,11 +136,9 @@
                             <p id="scoreDescription">
                                 Educational password strength score
                             </p>
-
                         </div>
 
                         <div class="chart-wrapper">
-
                             <canvas
                                 id="scoreChart"
                                 role="img"
@@ -181,9 +146,7 @@
                             >
                                 Password strength score visualization.
                             </canvas>
-
                         </div>
-
                     </div>
 
                     <div class="score-track">
@@ -199,67 +162,68 @@
                     </div>
 
                     <p class="chart-note">
-                        The chart represents the overall educational score,
-                        not a cryptographic security guarantee.
+                        This is an educational score, not a cryptographic
+                        security guarantee.
                     </p>
-
                 </div>
 
-                <!-- Analysis metrics -->
                 <div class="metrics-section">
-
                     <h3>Security metrics</h3>
 
-                    <div
-                        id="metricsList"
-                        class="metrics-grid"
-                        aria-live="polite"
-                    >
-
+                    <div id="metricsList" class="metrics-grid" aria-live="polite">
                         <div class="metric-card">
-                            <span class="metric-label">
-                                PASSWORD LENGTH
-                            </span>
+                            <span class="metric-label">PASSWORD LENGTH</span>
                             <strong id="metricLength">—</strong>
                         </div>
 
                         <div class="metric-card">
-                            <span class="metric-label">
-                                CHARACTER TYPES
-                            </span>
+                            <span class="metric-label">CHARACTER TYPES</span>
                             <strong id="metricCharacters">—</strong>
                         </div>
 
                         <div class="metric-card">
-                            <span class="metric-label">
-                                DETECTED RISK CHECKS
-                            </span>
+                            <span class="metric-label">DETECTED RISK CHECKS</span>
                             <strong id="metricRisks">—</strong>
                         </div>
-
                     </div>
-
                 </div>
 
-                <!-- Findings and suggestions -->
                 <div class="result-grid">
-
                     <div class="result-box">
-
                         <h4>Security Findings</h4>
-
                         <ul id="findingsList"></ul>
-
                     </div>
 
                     <div class="result-box">
-
                         <h4>Security Suggestions</h4>
-
                         <ul id="suggestionsList"></ul>
+                    </div>
+                </div>
 
+                <div class="save-history-panel">
+                    <div>
+                        <strong>Save this analysis?</strong>
+                        <p>
+                            Only the score and approved security metrics
+                            will be saved. Your password will not be saved.
+                        </p>
                     </div>
 
+                    <button
+                        type="button"
+                        id="saveAnalysisButton"
+                        class="secondary-button"
+                        disabled
+                    >
+                        Save analysis to history
+                    </button>
+
+                    <div
+                        id="saveHistoryStatus"
+                        class="status-message"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
                 </div>
 
                 <p class="disclaimer">
@@ -267,9 +231,7 @@
                     It does not guarantee resistance against every
                     password attack.
                 </p>
-
             </section>
-
         </section>
 
         <!-- Secure password generator -->
@@ -277,13 +239,9 @@
             class="card generator-card"
             aria-labelledby="generator-title"
         >
-
             <div class="section-heading">
-
                 <div>
-                    <span class="section-number">
-                        02 / GENERATION
-                    </span>
+                    <span class="section-number">02 / GENERATION</span>
 
                     <h2 id="generator-title">
                         Generate a secure password
@@ -295,19 +253,12 @@
                 </div>
 
                 <span class="heading-icon" aria-hidden="true">⚡</span>
-
             </div>
 
             <form id="generatorForm">
-
                 <div class="length-heading">
-
-                    <label for="passwordLength">
-                        Password length
-                    </label>
-
+                    <label for="passwordLength">Password length</label>
                     <strong id="lengthValue">20</strong>
-
                 </div>
 
                 <input
@@ -324,56 +275,32 @@
                 </div>
 
                 <fieldset class="category-fieldset">
-
-                    <legend>
-                        Include character categories
-                    </legend>
+                    <legend>Include character categories</legend>
 
                     <label class="checkbox-option">
-                        <input
-                            type="checkbox"
-                            id="includeLowercase"
-                            checked
-                        >
+                        <input type="checkbox" id="includeLowercase" checked>
                         <span>Lowercase letters (a-z)</span>
                     </label>
 
                     <label class="checkbox-option">
-                        <input
-                            type="checkbox"
-                            id="includeUppercase"
-                            checked
-                        >
+                        <input type="checkbox" id="includeUppercase" checked>
                         <span>Uppercase letters (A-Z)</span>
                     </label>
 
                     <label class="checkbox-option">
-                        <input
-                            type="checkbox"
-                            id="includeDigits"
-                            checked
-                        >
+                        <input type="checkbox" id="includeDigits" checked>
                         <span>Numbers (0-9)</span>
                     </label>
 
                     <label class="checkbox-option">
-                        <input
-                            type="checkbox"
-                            id="includeSymbols"
-                            checked
-                        >
+                        <input type="checkbox" id="includeSymbols" checked>
                         <span>Special characters (!@#...)</span>
                     </label>
-
                 </fieldset>
 
-                <button
-                    type="submit"
-                    class="primary-button full-width"
-                >
+                <button type="submit" class="primary-button full-width">
                     Generate Secure Password
                 </button>
-
             </form>
 
             <div
@@ -388,13 +315,11 @@
                 class="generated-result hidden"
                 aria-labelledby="generated-title"
             >
-
                 <label for="generatedPassword" id="generated-title">
                     Generated password
                 </label>
 
                 <div class="password-input-wrapper">
-
                     <input
                         id="generatedPassword"
                         type="password"
@@ -412,7 +337,6 @@
                     >
                         Show
                     </button>
-
                 </div>
 
                 <button
@@ -425,20 +349,71 @@
 
                 <p class="privacy-note">
                     Save generated passwords in a trusted password manager.
-                    This application does not save them.
+                    This application does not save them in its history.
                 </p>
-
             </section>
+        </section>
 
+        <!-- Privacy-first analysis history -->
+        <section
+            class="card history-card"
+            aria-labelledby="history-title"
+        >
+            <div class="section-heading">
+                <div>
+                    <span class="section-number">03 / HISTORY</span>
+                    <h2 id="history-title">Analysis history</h2>
+                    <p>
+                        View only the analysis summaries you explicitly saved.
+                    </p>
+                </div>
+
+                <span class="heading-icon" aria-hidden="true">📊</span>
+            </div>
+
+            <div class="history-actions">
+                <button
+                    type="button"
+                    id="refreshHistoryButton"
+                    class="secondary-button"
+                >
+                    Refresh history
+                </button>
+
+                <button
+                    type="button"
+                    id="clearHistoryButton"
+                    class="danger-button"
+                >
+                    Clear history
+                </button>
+            </div>
+
+            <div
+                id="historyStatus"
+                class="status-message"
+                role="status"
+                aria-live="polite"
+            ></div>
+
+            <div id="historyList" class="history-list">
+                <p class="empty-history">
+                    Loading saved analysis records...
+                </p>
+            </div>
+
+            <p class="privacy-note">
+                This is a local, single-user educational history.
+                Do not expose this application to multiple users without
+                adding authentication and user-specific data isolation.
+            </p>
         </section>
 
         <!-- Educational section -->
         <section class="education-card">
-
             <h2>Essential password security practices</h2>
 
             <div class="education-grid">
-
                 <div>
                     <strong>Use unique passwords</strong>
                     <p>
@@ -467,24 +442,13 @@
                         Use multi-factor authentication whenever available.
                     </p>
                 </div>
-
             </div>
-
         </section>
-
     </main>
 
     <footer class="footer">
-
-        <p>
-            Password Strength Analyzer & Security Suggestion Tool
-        </p>
-
-        <p>
-            Educational Cybersecurity Project | Built by Ayush Kumar Dubey
-        </p>
-
+        <p>Password Strength Analyzer & Security Suggestion Tool</p>
+        <p>Educational Cybersecurity Project | Built by Ayush Kumar Dubey</p>
     </footer>
-
 </body>
 </html>

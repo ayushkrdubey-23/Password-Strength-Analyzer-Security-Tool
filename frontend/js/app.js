@@ -38,7 +38,18 @@ const toggleGeneratedPassword = document.getElementById(
 
 const copyPasswordButton = document.getElementById("copyPassword");
 
+const saveAnalysisButton = document.getElementById("saveAnalysisButton");
+const saveHistoryStatus = document.getElementById("saveHistoryStatus");
+
+const historyList = document.getElementById("historyList");
+const historyStatus = document.getElementById("historyStatus");
+const refreshHistoryButton = document.getElementById(
+    "refreshHistoryButton"
+);
+const clearHistoryButton = document.getElementById("clearHistoryButton");
+
 let scoreChart = null;
+let latestHistoryMetadata = null;
 
 
 // Display a status message without interpreting it as HTML.
@@ -81,10 +92,7 @@ function togglePasswordVisibility(input, button) {
         currentlyHidden ? "Hide password" : "Show password"
     );
 
-    button.setAttribute(
-        "aria-pressed",
-        String(currentlyHidden)
-    );
+    button.setAttribute("aria-pressed", String(currentlyHidden));
 }
 
 
@@ -98,10 +106,7 @@ function getStrengthClass(strength) {
 
 // Return the number of enabled character categories.
 function countCharacterTypes(characterTypes) {
-    if (
-        !characterTypes ||
-        typeof characterTypes !== "object"
-    ) {
+    if (!characterTypes || typeof characterTypes !== "object") {
         return 0;
     }
 
@@ -155,10 +160,7 @@ function getScoreDescription(strength) {
 
 // Update the visual score chart.
 function updateScoreChart(score) {
-    if (
-        typeof Chart === "undefined" ||
-        !scoreChartCanvas
-    ) {
+    if (typeof Chart === "undefined" || !scoreChartCanvas) {
         return;
     }
 
@@ -173,27 +175,14 @@ function updateScoreChart(score) {
         type: "doughnut",
 
         data: {
-            labels: [
-                "Score",
-                "Remaining"
-            ],
+            labels: ["Score", "Remaining"],
 
-            datasets: [
-                {
-                    data: [
-                        score,
-                        remainingScore
-                    ],
-
-                    backgroundColor: [
-                        "#3157d5",
-                        "#e1e7f1"
-                    ],
-
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }
-            ]
+            datasets: [{
+                data: [score, remainingScore],
+                backgroundColor: ["#3157d5", "#e1e7f1"],
+                borderWidth: 0,
+                hoverOffset: 4
+            }]
         },
 
         options: {
@@ -254,6 +243,15 @@ function displayAnalysisResults(data) {
     );
 
     const strength = String(data.strength || "UNKNOWN");
+    const analyses = data.analyses || {};
+
+    const findings = Array.isArray(data.findings)
+        ? data.findings
+        : [];
+
+    const characterTypesCount = countCharacterTypes(
+        analyses.characters?.character_types
+    );
 
     scoreValue.textContent = String(score);
 
@@ -264,15 +262,14 @@ function displayAnalysisResults(data) {
     strengthBadge.className =
         `strength-badge ${getStrengthClass(strength)}`;
 
-    scoreDescription.textContent =
-        getScoreDescription(strength);
+    scoreDescription.textContent = getScoreDescription(strength);
 
     updateScoreChart(score);
     updateMetrics(data);
 
     populateList(
         findingsList,
-        data.findings,
+        findings,
         "No specific weaknesses were detected by these checks."
     );
 
@@ -281,6 +278,22 @@ function displayAnalysisResults(data) {
         data.suggestions,
         "Continue following good password security practices."
     );
+
+    // Keep only approved metadata in frontend memory.
+    // The submitted password is deliberately not included.
+    latestHistoryMetadata = {
+        score: score,
+        strength: strength,
+        findings_count: findings.length,
+        character_types_count: characterTypesCount,
+        analysis_completed: true
+    };
+
+    saveAnalysisButton.disabled = false;
+    saveAnalysisButton.textContent = "Save analysis to history";
+
+    saveHistoryStatus.textContent = "";
+    saveHistoryStatus.className = "status-message";
 
     analysisResults.classList.remove("hidden");
 }
@@ -302,6 +315,8 @@ analyzerForm.addEventListener("submit", async (event) => {
     }
 
     analysisResults.classList.add("hidden");
+    latestHistoryMetadata = null;
+    saveAnalysisButton.disabled = true;
 
     showStatus(
         analysisStatus,
@@ -347,8 +362,7 @@ analyzerForm.addEventListener("submit", async (event) => {
     } catch (error) {
         showStatus(
             analysisStatus,
-            error.message ||
-                "Unable to connect to the analysis service.",
+            error.message || "Unable to connect to the analysis service.",
             "error"
         );
 
@@ -364,6 +378,254 @@ toggleAnalysisPassword.addEventListener("click", () => {
         analysisPassword,
         toggleAnalysisPassword
     );
+});
+
+
+// Save approved metadata only after an explicit user action.
+saveAnalysisButton.addEventListener("click", async () => {
+    if (!latestHistoryMetadata) {
+        showStatus(
+            saveHistoryStatus,
+            "Analyze a password before saving its summary.",
+            "error"
+        );
+        return;
+    }
+
+    saveAnalysisButton.disabled = true;
+
+    showStatus(
+        saveHistoryStatus,
+        "Saving analysis summary...",
+        "success"
+    );
+
+    try {
+        const response = await fetch("/api/history", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            // This object contains metadata only.
+            // Never add the submitted password or generated password here.
+            body: JSON.stringify(latestHistoryMetadata)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.error || "Unable to save analysis history."
+            );
+        }
+
+        showStatus(
+            saveHistoryStatus,
+            "Analysis summary saved. Your password was not saved.",
+            "success"
+        );
+
+        await loadAnalysisHistory();
+
+    } catch (error) {
+        showStatus(
+            saveHistoryStatus,
+            error.message || "Unable to save analysis history.",
+            "error"
+        );
+
+    } finally {
+        saveAnalysisButton.disabled = false;
+    }
+});
+
+
+// Format an ISO timestamp for display.
+function formatHistoryDate(value) {
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Date unavailable";
+    }
+
+    return date.toLocaleString();
+}
+
+
+// Create a history card using safe DOM methods.
+function createHistoryCard(record) {
+    const card = document.createElement("article");
+    card.className = "history-record";
+
+    const heading = document.createElement("div");
+    heading.className = "history-record-heading";
+
+    const strength = document.createElement("strong");
+    strength.className =
+        `strength-badge ${getStrengthClass(record.strength)}`;
+    strength.textContent = String(record.strength);
+
+    const score = document.createElement("span");
+    score.className = "history-score";
+    score.textContent = `${record.score} / 100`;
+
+    heading.appendChild(strength);
+    heading.appendChild(score);
+
+    const details = document.createElement("p");
+    details.className = "history-details";
+    details.textContent =
+        `Findings: ${record.findings_count} | ` +
+        `Character types: ${record.character_types_count} / 4`;
+
+    const date = document.createElement("time");
+    date.className = "history-date";
+    date.dateTime = String(record.created_at || "");
+    date.textContent = formatHistoryDate(record.created_at);
+
+    card.appendChild(heading);
+    card.appendChild(details);
+    card.appendChild(date);
+
+    return card;
+}
+
+
+// Retrieve and display saved analysis metadata.
+async function loadAnalysisHistory() {
+    historyList.replaceChildren();
+
+    const loadingMessage = document.createElement("p");
+    loadingMessage.className = "empty-history";
+    loadingMessage.textContent = "Loading saved analysis records...";
+    historyList.appendChild(loadingMessage);
+
+    try {
+        const response = await fetch("/api/history", {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.error || "Unable to retrieve analysis history."
+            );
+        }
+
+        historyList.replaceChildren();
+
+        const records = Array.isArray(result.data)
+            ? result.data
+            : [];
+
+        if (records.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "empty-history";
+            emptyMessage.textContent =
+                "No saved analyses yet. Analyze a demo password and choose Save analysis to history.";
+            historyList.appendChild(emptyMessage);
+
+            showStatus(
+                historyStatus,
+                "No saved analysis records found.",
+                "success"
+            );
+
+            return;
+        }
+
+        records.forEach((record) => {
+            historyList.appendChild(createHistoryCard(record));
+        });
+
+        showStatus(
+            historyStatus,
+            `${records.length} saved analysis record(s) loaded.`,
+            "success"
+        );
+
+    } catch (error) {
+        historyList.replaceChildren();
+
+        const errorMessage = document.createElement("p");
+        errorMessage.className = "empty-history";
+        errorMessage.textContent = "History could not be loaded.";
+        historyList.appendChild(errorMessage);
+
+        showStatus(
+            historyStatus,
+            error.message || "Unable to retrieve analysis history.",
+            "error"
+        );
+    }
+}
+
+
+// Refresh history after a user action.
+refreshHistoryButton.addEventListener("click", async () => {
+    refreshHistoryButton.disabled = true;
+
+    await loadAnalysisHistory();
+
+    refreshHistoryButton.disabled = false;
+});
+
+
+// Clear saved metadata after explicit confirmation.
+clearHistoryButton.addEventListener("click", async () => {
+    const confirmed = window.confirm(
+        "Are you sure you want to delete all saved analysis history?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    clearHistoryButton.disabled = true;
+
+    showStatus(
+        historyStatus,
+        "Clearing saved history...",
+        "success"
+    );
+
+    try {
+        const response = await fetch("/api/history", {
+            method: "DELETE"
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(
+                result.error || "Unable to clear analysis history."
+            );
+        }
+
+        await loadAnalysisHistory();
+
+        showStatus(
+            historyStatus,
+            `${result.deleted_records} saved record(s) deleted.`,
+            "success"
+        );
+
+    } catch (error) {
+        showStatus(
+            historyStatus,
+            error.message || "Unable to clear analysis history.",
+            "error"
+        );
+
+    } finally {
+        clearHistoryButton.disabled = false;
+    }
 });
 
 
@@ -485,7 +747,6 @@ copyPasswordButton.addEventListener("click", async () => {
             "Generate a password before copying.",
             "error"
         );
-
         return;
     }
 
@@ -506,3 +767,7 @@ copyPasswordButton.addEventListener("click", async () => {
         );
     }
 });
+
+
+// Load saved metadata when the page is ready.
+loadAnalysisHistory();

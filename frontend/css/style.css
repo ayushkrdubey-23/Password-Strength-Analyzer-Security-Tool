@@ -45,6 +45,7 @@ input:focus-visible {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
 }
@@ -179,9 +180,10 @@ form > label,
 }
 
 .primary-button,
-.secondary-button {
-    min-height: 46px;
-    padding: 12px 18px;
+.secondary-button,
+.danger-button {
+    min-height: 44px;
+    padding: 11px 16px;
     border: 0;
     border-radius: 9px;
     cursor: pointer;
@@ -200,20 +202,28 @@ form > label,
     transform: translateY(-1px);
 }
 
-.primary-button:disabled {
-    opacity: 0.65;
-    cursor: wait;
-    transform: none;
-}
-
 .secondary-button {
-    margin-top: 12px;
     color: var(--primary);
     background: #edf1ff;
 }
 
 .secondary-button:hover {
     background: #e0e7ff;
+}
+
+.danger-button {
+    color: #a52c2c;
+    background: #fff0f0;
+}
+
+.danger-button:hover {
+    background: #ffe1e1;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .full-width {
@@ -264,6 +274,7 @@ form > label,
 }
 
 .strength-badge {
+    display: inline-block;
     padding: 6px 11px;
     border-radius: 20px;
     background: #edf1ff;
@@ -445,6 +456,30 @@ form > label,
     font-size: 11px;
 }
 
+/* Explicit history save panel */
+
+.save-history-panel {
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px solid #dce5ff;
+    border-radius: 12px;
+    background: #f7f9ff;
+}
+
+.save-history-panel strong {
+    font-size: 14px;
+}
+
+.save-history-panel p {
+    margin: 5px 0 12px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.save-history-panel .secondary-button {
+    width: 100%;
+}
+
 /* Generator */
 
 .length-heading {
@@ -518,6 +553,64 @@ form > label,
     font-size: 13px;
 }
 
+/* History */
+
+.history-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.history-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.history-record {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: #fbfcff;
+}
+
+.history-record-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.history-score {
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.history-details {
+    margin: 10px 0 4px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.history-date {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.empty-history {
+    margin: 0;
+    padding: 20px;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 13px;
+}
+
 /* Education section */
 
 .education-card {
@@ -576,7 +669,9 @@ form > label,
 
 @media (max-width: 600px) {
     .topbar {
-        padding: 0 4%;
+        padding: 12px 4%;
+        align-items: flex-start;
+        flex-direction: column;
     }
 
     .header-label {
@@ -621,6 +716,14 @@ form > label,
     .results-heading {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .history-actions {
+        flex-direction: column;
+    }
+
+    .history-actions button {
+        width: 100%;
     }
 }
 

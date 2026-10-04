@@ -1,4 +1,4 @@
-"""Tests for frontend pages and static assets."""
+"""Tests for frontend pages, static assets, and history integration."""
 
 from backend import create_app
 
@@ -62,9 +62,38 @@ def test_homepage_contains_privacy_warning():
 
     response = client.get("/")
 
-    assert b"synthetic demo passwords only" in response.data
+    assert b"synthetic demo password" in response.data
     assert b"Never enter a real" in response.data
     assert b"account password" in response.data
+
+
+def test_homepage_contains_history_section():
+    client = create_test_client()
+
+    response = client.get("/")
+
+    assert b"history-title" in response.data
+    assert b"historyList" in response.data
+    assert b"Analysis history" in response.data
+
+
+def test_homepage_contains_history_controls():
+    client = create_test_client()
+
+    response = client.get("/")
+
+    assert b"saveAnalysisButton" in response.data
+    assert b"refreshHistoryButton" in response.data
+    assert b"clearHistoryButton" in response.data
+
+
+def test_homepage_explains_metadata_only_history():
+    client = create_test_client()
+
+    response = client.get("/")
+
+    assert b"password will not be saved" in response.data
+    assert b"single-user educational history" in response.data
 
 
 def test_css_file_is_served():
@@ -78,6 +107,17 @@ def test_css_file_is_served():
     assert b"chart-wrapper" in response.data
 
 
+def test_css_contains_history_styles():
+    client = create_test_client()
+
+    response = client.get("/css/style.css")
+
+    assert response.status_code == 200
+    assert b"history-record" in response.data
+    assert b"history-actions" in response.data
+    assert b"save-history-panel" in response.data
+
+
 def test_javascript_file_is_served():
     client = create_test_client()
 
@@ -88,3 +128,39 @@ def test_javascript_file_is_served():
     assert b"/api/generate" in response.data
     assert b"updateScoreChart" in response.data
     assert b"countDetectedRisks" in response.data
+
+
+def test_javascript_contains_history_api_actions():
+    client = create_test_client()
+
+    response = client.get("/js/app.js")
+
+    assert response.status_code == 200
+    assert b"/api/history" in response.data
+    assert b"loadAnalysisHistory" in response.data
+    assert b"clearHistoryButton" in response.data
+    assert b"saveAnalysisButton" in response.data
+
+
+def test_javascript_saves_only_approved_metadata():
+    client = create_test_client()
+
+    response = client.get("/js/app.js")
+    javascript = response.data.decode("utf-8")
+
+    assert response.status_code == 200
+    assert "findings_count" in javascript
+    assert "character_types_count" in javascript
+    assert "analysis_completed" in javascript
+    assert "latestHistoryMetadata" in javascript
+
+
+def test_javascript_does_not_use_browser_storage():
+    client = create_test_client()
+
+    response = client.get("/js/app.js")
+    javascript = response.data.decode("utf-8")
+
+    assert response.status_code == 200
+    assert "localStorage" not in javascript
+    assert "sessionStorage" not in javascript
