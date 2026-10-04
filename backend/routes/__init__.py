@@ -7,6 +7,7 @@ from backend.routes.frontend import frontend_bp
 from backend.routes.policy import policy_bp
 from backend.routes.docs import docs_bp
 from backend.routes.history import history_bp
+from backend.routes.hash_demo import hash_demo_bp
 
 
 def register_routes(app):
@@ -18,4 +19,5 @@ def register_routes(app):
     app.register_blueprint(policy_bp)
     app.register_blueprint(docs_bp)
     app.register_blueprint(history_bp)
+    app.register_blueprint(hash_demo_bp)
     app.register_blueprint(frontend_bp)
