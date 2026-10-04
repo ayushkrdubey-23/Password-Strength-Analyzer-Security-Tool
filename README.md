@@ -1,9 +1,10 @@
-
 # Password Strength Analyzer & Security Suggestion Tool
 
 A privacy-focused defensive cybersecurity application that analyzes password strength, detects predictable patterns, evaluates password policies, and provides actionable security recommendations.
 
 **Developed by:** Ayush Kumar Dubey
+
+**GitHub Repository:** [Password Strength Analyzer & Security Suggestion Tool](https://github.com/ayushkrdubey-23/Password-Strength-Analyzer-Security-Tool)
 
 ---
 
@@ -15,97 +16,105 @@ The application evaluates password length, character diversity, common-password 
 
 It also provides a cryptographically secure password generator, an educational Argon2id hashing demonstration, and an optional privacy-conscious analysis history.
 
-The analysis engine processes passwords locally through the Flask backend. Submitted passwords are not intentionally stored in the database or written to application logs.
+The analysis engine processes passwords through the Flask backend. Submitted passwords are not intentionally stored in the database or written to application logs.
 
-> **Important:** Use synthetic or demonstration passwords while testing. Do not enter your actual personal, banking, email, or institutional passwords.
+> **Important:** Use synthetic or demonstration passwords while testing. Never enter your actual personal, banking, email, or institutional passwords.
 
 ---
 
 ## Key Features
 
 ### Password Analysis
-- Real-time password strength evaluation.
-- Five strength classifications:
-  - VERY WEAK
-  - WEAK
-  - MODERATE
-  - STRONG
-  - VERY STRONG
-- Password length analysis.
-- Lowercase, uppercase, digit, and symbol diversity analysis.
-- Common password detection using a local dataset.
-- Sequential character and keyboard-pattern detection.
-- Repeated character and substring detection.
-- Predictable prefix, suffix, year, and date detection.
-- Local dictionary-word detection.
-- Educational entropy estimation.
-- Actionable security recommendations.
+
+* Password strength evaluation.
+* Five strength classifications:
+
+  * VERY WEAK
+  * WEAK
+  * MODERATE
+  * STRONG
+  * VERY STRONG
+* Password length analysis.
+* Lowercase, uppercase, digit, and symbol diversity analysis.
+* Common-password detection using a local dataset.
+* Sequential character and keyboard-pattern detection.
+* Repeated character and substring detection.
+* Predictable prefix, suffix, year, and date detection.
+* Local dictionary-word detection.
+* Educational entropy estimation.
+* Actionable security recommendations.
 
 ### Secure Password Generator
-- Uses Python's `secrets` module.
-- Configurable password length.
-- Optional lowercase, uppercase, digit, and symbol categories.
-- Ensures at least one character from every selected category.
+
+* Uses Python's `secrets` module.
+* Configurable password length.
+* Optional lowercase, uppercase, digit, and symbol categories.
+* Ensures at least one character from every selected category.
 
 ### Password Policy Checker
-- Evaluates passwords against the application's default password policy.
-- Checks minimum length and character diversity.
-- Identifies common and predictable password patterns.
-- Returns compliance status and recommendations.
+
+* Evaluates passwords against the application's default password policy.
+* Checks minimum length and character diversity.
+* Identifies common and predictable password patterns.
+* Returns compliance status and recommendations.
 
 ### Privacy-First Analysis History
-- History is saved only after an explicit user action.
-- Stores approved analysis metadata only.
-- Supports viewing and clearing saved records.
-- Does not intentionally store plaintext passwords or password hashes.
+
+* History is saved only after an explicit user action.
+* Stores approved analysis metadata only.
+* Supports viewing and clearing saved records.
+* Does not intentionally store plaintext passwords or password hashes.
 
 ### Educational Argon2id Demonstration
-- Demonstrates password hashing using Argon2id.
-- Demonstrates password verification.
-- Explains the difference between password analysis and password hashing.
-- Hashes are returned for educational demonstration and are not persisted by these endpoints.
+
+* Demonstrates password hashing using Argon2id.
+* Demonstrates password verification.
+* Explains the difference between password analysis and password hashing.
+* Hashes are returned for educational demonstration and are not persisted by these endpoints.
 
 ### Visual Dashboard
-- Responsive HTML, CSS, and JavaScript interface.
-- Score visualization using Chart.js.
-- Analysis metrics and security suggestions.
-- Show/hide password functionality.
-- Password generator interface.
-- Optional history dashboard.
+
+* Responsive HTML, CSS, and JavaScript interface.
+* Score visualization using Chart.js.
+* Analysis metrics and security suggestions.
+* Show/hide password functionality.
+* Password generator interface.
+* Optional history dashboard.
 
 ### Security and Testing
-- Flask API rate limiting.
-- Security response headers.
-- Production secret-key validation.
-- Privacy regression tests.
-- Dependency vulnerability auditing with pip-audit.
-- Python security analysis with Bandit.
-- Automated GitHub Actions workflow.
+
+* Flask API rate limiting.
+* Security response headers.
+* Production secret-key validation.
+* Privacy regression tests.
+* Dependency vulnerability auditing with pip-audit.
+* Python security analysis with Bandit.
+* Automated GitHub Actions workflow.
 
 ---
 
 ## Technology Stack
 
-| Category | Technologies |
-|---|---|
-| Backend | Python, Flask |
-| Frontend | HTML5, CSS3, JavaScript |
-| Database | SQLite |
-| Visualization | Chart.js |
-| Password generation | Python `secrets` |
-| Password hashing demonstration | Argon2id |
-| API documentation | OpenAPI, Swagger UI |
-| Testing | Pytest |
-| Security auditing | Bandit, pip-audit |
-| Version control | Git, GitHub |
-| CI/CD | GitHub Actions |
+| Category                       | Technologies            |
+| ------------------------------ | ----------------------- |
+| Backend                        | Python, Flask           |
+| Frontend                       | HTML5, CSS3, JavaScript |
+| Database                       | SQLite                  |
+| Visualization                  | Chart.js                |
+| Password generation            | Python `secrets`        |
+| Password hashing demonstration | Argon2id                |
+| API documentation              | OpenAPI, Swagger UI     |
+| Testing                        | Pytest                  |
+| Security auditing              | Bandit, pip-audit       |
+| Version control                | Git, GitHub             |
+| CI/CD                          | GitHub Actions          |
 
 ---
 
 ## Project Architecture
 
 ```text
-Password-Strength-Analyzer/
+Password-Strength-Analyzer-Security-Tool/
 │
 ├── .github/
 │   └── workflows/
@@ -113,28 +122,7 @@ Password-Strength-Analyzer/
 │
 ├── backend/
 │   ├── routes/
-│   │   ├── analyzer.py
-│   │   ├── generator.py
-│   │   ├── policy.py
-│   │   ├── history.py
-│   │   ├── hash_demo.py
-│   │   ├── docs.py
-│   │   ├── frontend.py
-│   │   └── health.py
-│   │
 │   ├── services/
-│   │   ├── password_analyzer.py
-│   │   ├── password_generator.py
-│   │   ├── password_policy_checker.py
-│   │   ├── entropy_estimator.py
-│   │   ├── common_password_checker.py
-│   │   ├── dictionary_word_detector.py
-│   │   ├── pattern_detector.py
-│   │   ├── repetition_analyzer.py
-│   │   ├── predictable_pattern_analyzer.py
-│   │   ├── history_service.py
-│   │   └── argon2_demo.py
-│   │
 │   ├── config.py
 │   ├── extensions.py
 │   ├── app.py
@@ -152,14 +140,12 @@ Password-Strength-Analyzer/
 │   └── index.html
 │
 ├── tests/
-│
 ├── docs/
 │   ├── API_REFERENCE.md
 │   └── SECURITY_AND_PRIVACY.md
 │
 ├── reports/
 ├── screenshots/
-│
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
@@ -173,16 +159,16 @@ Password-Strength-Analyzer/
 
 ### Prerequisites
 
-- Python 3.11 or later.
-- Git.
-- Visual Studio Code (recommended).
-- A modern web browser.
+* Python 3.11 or later.
+* Git.
+* Visual Studio Code (recommended).
+* A modern web browser.
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ayushkrdubey-23/Password-Strength-Analyzer.git
-cd Password-Strength-Analyzer
+git clone https://github.com/ayushkrdubey-23/Password-Strength-Analyzer-Security-Tool.git
+cd Password-Strength-Analyzer-Security-Tool
 ```
 
 ### 2. Create a virtual environment
@@ -233,27 +219,27 @@ http://127.0.0.1:5000/
 
 ## API Documentation
 
-Swagger UI:
+**Swagger UI**
 
 ```text
 http://127.0.0.1:5000/apidocs
 ```
 
-OpenAPI specification:
+**OpenAPI specification**
 
 ```text
 http://127.0.0.1:5000/openapi.json
 ```
 
-Detailed endpoint documentation and request examples are available in:
+Detailed endpoint documentation and request examples:
 
-[`docs/API_REFERENCE.md`](docs/API_REFERENCE.md)
+[API Reference](docs/API_REFERENCE.md)
 
 ---
 
 ## Running Tests
 
-Run the complete automated test suite:
+Run the automated test suite:
 
 ```bash
 python -m pytest -v
@@ -291,15 +277,15 @@ The repository includes a GitHub Actions workflow that runs on pushes and pull r
 
 The workflow performs:
 
-- Python environment setup.
-- Dependency installation.
-- Python compilation.
-- Automated tests.
-- Bandit security analysis.
-- pip-audit dependency checks.
-- Frontend JavaScript syntax validation.
+* Python environment setup.
+* Dependency installation.
+* Python compilation.
+* Automated tests.
+* Bandit security analysis.
+* pip-audit dependency checks.
+* Frontend JavaScript syntax validation.
 
-Check the **Actions** tab in the GitHub repository for workflow execution results.
+Check the **Actions** tab in the GitHub repository for actual workflow execution results.
 
 ---
 
@@ -307,15 +293,15 @@ Check the **Actions** tab in the GitHub repository for workflow execution result
 
 This project follows a privacy-conscious educational design:
 
-- Submitted passwords are processed transiently.
-- The analysis API does not intentionally return submitted passwords.
-- Passwords are not intentionally stored in SQLite.
-- Analysis history accepts only approved metadata fields.
-- Password generation uses Python's cryptographically secure `secrets` module.
-- The Argon2id demonstration does not persist passwords or generated hashes.
-- Local datasets are used for common-password and dictionary checks.
+* Submitted passwords are processed transiently.
+* The analysis API does not intentionally return submitted passwords.
+* Passwords are not intentionally stored in SQLite.
+* Analysis history accepts only approved metadata fields.
+* Password generation uses Python's cryptographically secure `secrets` module.
+* The Argon2id demonstration does not persist passwords or generated hashes.
+* Local datasets are used for common-password and dictionary checks.
 
-Read [`docs/SECURITY_AND_PRIVACY.md`](docs/SECURITY_AND_PRIVACY.md) for the detailed design and limitations.
+Read [Security and Privacy](docs/SECURITY_AND_PRIVACY.md) for the detailed design and limitations.
 
 ---
 
@@ -323,31 +309,42 @@ Read [`docs/SECURITY_AND_PRIVACY.md`](docs/SECURITY_AND_PRIVACY.md) for the deta
 
 This is an educational, single-user project and is not a production authentication platform.
 
-- It does not authenticate users or isolate history between multiple users.
-- The current rate limiter uses in-memory storage.
-- Entropy estimates are theoretical approximations and do not guarantee resistance to attacks.
-- Local wordlists are limited and cannot identify every weak password.
-- Frontend visualizations and Swagger UI use external CDNs.
-- The application does not replace a professional password manager or a properly implemented authentication system.
+* It does not authenticate users or isolate history between multiple users.
+* The current rate limiter uses in-memory storage.
+* Entropy estimates are theoretical approximations and do not guarantee resistance to attacks.
+* Local wordlists are limited and cannot identify every weak password.
+* Frontend visualizations and Swagger UI use external CDNs.
+* The application does not replace a professional password manager or a properly implemented authentication system.
 
 ---
 
 ## Screenshots
 
-Application screenshots will be maintained in the `screenshots/` directory.
+The following screenshots are included in the repository.
 
-Suggested screenshots:
+### Home Dashboard
 
-- `01-home-dashboard.png`
-- `02-password-analysis.png`
-- `03-strength-visualization.png`
-- `04-security-suggestions.png`
-- `05-password-generator.png`
-- `06-policy-checker.png`
-- `07-analysis-history.png`
-- `08-argon2id-demo.png`
-- `09-swagger-api-docs.png`
-- `10-github-actions.png`
+![Home Dashboard](screenshots/01-home-dashboard.png)
+
+### Password Analysis
+
+![Password Analysis](screenshots/02-password-analysis.png)
+
+### Security Suggestions
+
+![Security Suggestions](screenshots/04-security-suggestions.png)
+
+### Password Generator
+
+![Password Generator](screenshots/05-password-generator.png)
+
+### Analysis History
+
+![Analysis History](screenshots/07-analysis-history.png)
+
+### Swagger API Documentation
+
+![Swagger API Documentation](screenshots/08-swagger-api-docs.png)
 
 ---
 
@@ -355,17 +352,17 @@ Suggested screenshots:
 
 Through this project, the following concepts are explored:
 
-- Defensive cybersecurity and password security.
-- Password-strength heuristics and pattern detection.
-- Password entropy estimation.
-- Cryptographically secure random generation.
-- Password hashing with Argon2id.
-- REST API development using Flask.
-- SQLite database integration.
-- Secure handling of sensitive inputs.
-- Automated testing and privacy regression testing.
-- Dependency auditing and static security analysis.
-- GitHub Actions CI automation.
+* Defensive cybersecurity and password security.
+* Password-strength heuristics and pattern detection.
+* Password entropy estimation.
+* Cryptographically secure random generation.
+* Password hashing with Argon2id.
+* REST API development using Flask.
+* SQLite database integration.
+* Secure handling of sensitive inputs.
+* Automated testing and privacy regression testing.
+* Dependency auditing and static security analysis.
+* GitHub Actions CI automation.
 
 ---
 
