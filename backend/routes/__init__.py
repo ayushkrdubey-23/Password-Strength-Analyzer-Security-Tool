@@ -6,6 +6,7 @@ from backend.routes.generator import generator_bp
 from backend.routes.frontend import frontend_bp
 from backend.routes.policy import policy_bp
 from backend.routes.docs import docs_bp
+from backend.routes.history import history_bp
 
 
 def register_routes(app):
@@ -16,4 +17,5 @@ def register_routes(app):
     app.register_blueprint(generator_bp)
     app.register_blueprint(policy_bp)
     app.register_blueprint(docs_bp)
+    app.register_blueprint(history_bp)
     app.register_blueprint(frontend_bp)

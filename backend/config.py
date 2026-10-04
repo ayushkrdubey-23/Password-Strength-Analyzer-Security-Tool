@@ -1,14 +1,10 @@
+"""Centralized application configuration."""
 
 import os
 
 
 def get_config():
-    """
-    Return application configuration.
-
-    Environment variables are loaded before this
-    function is called.
-    """
+    """Return application configuration."""
 
     return {
         "APP_NAME": os.getenv(
@@ -33,6 +29,11 @@ def get_config():
         "SECRET_KEY": os.getenv(
             "APP_SECRET_KEY",
             "development-only-change-this-secret"
+        ),
+
+        "DATABASE_PATH": os.getenv(
+            "DATABASE_PATH",
+            "instance/analytics.db"
         ),
 
         "MAX_CONTENT_LENGTH": 16 * 1024
