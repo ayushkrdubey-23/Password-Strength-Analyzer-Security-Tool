@@ -340,14 +340,10 @@ Suggested screenshots:
 
 - `01-home-dashboard.png`
 - `02-password-analysis.png`
-- `03-strength-visualization.png`
 - `04-security-suggestions.png`
 - `05-password-generator.png`
-- `06-policy-checker.png`
 - `07-analysis-history.png`
-- `08-argon2id-demo.png`
-- `09-swagger-api-docs.png`
-- `10-github-actions.png`
+- `08-swagger-api-docs.png`
 
 ---
 
