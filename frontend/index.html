@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Analyze password strength and generate secure passwords using local security checks."
+    >
+
+    <title>Password Strength Analyzer & Security Tool</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/app.js" defer></script>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="brand" href="/" aria-label="Password Security home">
+            <span class="brand-icon">🔐</span>
+            <span>Password Security</span>
+        </a>
+
+        <span class="header-label">Privacy-focused security toolkit</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <span class="eyebrow">PERSONAL SECURITY TOOLKIT</span>
+
+            <h1>Password Strength Analyzer</h1>
+
+            <p>
+                Understand password weaknesses, improve your security,
+                and generate stronger passwords with local analysis.
+            </p>
+        </section>
+
+        <section class="card analyzer-card" aria-labelledby="analyzer-title">
+            <div class="section-heading">
+                <div>
+                    <span class="section-number">01 / ANALYSIS</span>
+                    <h2 id="analyzer-title">Check your password</h2>
+                    <p>Get an educational security assessment.</p>
+                </div>
+
+                <span class="heading-icon">🛡️</span>
+            </div>
+
+            <form id="analyzerForm">
+                <label for="analysisPassword">Password to analyze</label>
+
+                <div class="password-input-wrapper">
+                    <input
+                        id="analysisPassword"
+                        name="password"
+                        type="password"
+                        placeholder="Enter a synthetic demo password"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                    <button
+                        type="button"
+                        class="input-action"
+                        id="toggleAnalysisPassword"
+                        aria-label="Show password"
+                    >
+                        Show
+                    </button>
+                </div>
+
+                <button type="submit" class="primary-button full-width">
+                    Analyze Password
+                </button>
+            </form>
+
+            <p class="privacy-note">
+                <span>🔒</span>
+                Analysis is performed locally by your application.
+                Do not enter a real account password.
+            </p>
+
+            <div id="analysisStatus" class="status-message" role="status" aria-live="polite"></div>
+
+            <section id="analysisResults" class="results hidden" aria-labelledby="results-title">
+                <div class="results-heading">
+                    <h3 id="results-title">Analysis Results</h3>
+                    <span id="strengthBadge" class="strength-badge">MODERATE</span>
+                </div>
+
+                <div class="score-panel">
+                    <div class="score-value">
+                        <span id="scoreValue">0</span>
+                        <span class="score-total">/ 100</span>
+                    </div>
+
+                    <div class="score-track">
+                        <div id="scoreBar" class="score-bar"></div>
+                    </div>
+
+                    <p id="scoreDescription">Educational strength score</p>
+                </div>
+
+                <div class="result-grid">
+                    <div class="result-box">
+                        <h4>Security Findings</h4>
+                        <ul id="findingsList"></ul>
+                    </div>
+
+                    <div class="result-box">
+                        <h4>Suggestions</h4>
+                        <ul id="suggestionsList"></ul>
+                    </div>
+                </div>
+
+                <p class="disclaimer">
+                    This score is an educational heuristic, not a
+                    cryptographic guarantee of password security.
+                </p>
+            </section>
+        </section>
+
+        <section class="card generator-card" aria-labelledby="generator-title">
+            <div class="section-heading">
+                <div>
+                    <span class="section-number">02 / GENERATION</span>
+                    <h2 id="generator-title">Generate a secure password</h2>
+                    <p>Create a random password using Python's secrets module.</p>
+                </div>
+
+                <span class="heading-icon">⚡</span>
+            </div>
+
+            <form id="generatorForm">
+                <div class="length-heading">
+                    <label for="passwordLength">Password length</label>
+                    <strong id="lengthValue">20</strong>
+                </div>
+
+                <input
+                    id="passwordLength"
+                    type="range"
+                    min="8"
+                    max="128"
+                    value="20"
+                >
+
+                <div class="range-labels">
+                    <span>8 characters</span>
+                    <span>128 characters</span>
+                </div>
+
+                <fieldset class="category-fieldset">
+                    <legend>Include character categories</legend>
+
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeLowercase" checked>
+                        <span>Lowercase letters (a–z)</span>
+                    </label>
+
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeUppercase" checked>
+                        <span>Uppercase letters (A–Z)</span>
+                    </label>
+
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeDigits" checked>
+                        <span>Numbers (0–9)</span>
+                    </label>
+
+                    <label class="checkbox-option">
+                        <input type="checkbox" id="includeSymbols" checked>
+                        <span>Special characters (!@#...)</span>
+                    </label>
+                </fieldset>
+
+                <button type="submit" class="primary-button full-width">
+                    Generate Secure Password
+                </button>
+            </form>
+
+            <div id="generatorStatus" class="status-message" role="status" aria-live="polite"></div>
+
+            <section id="generatedResult" class="generated-result hidden">
+                <label for="generatedPassword">Generated password</label>
+
+                <div class="password-input-wrapper">
+                    <input
+                        id="generatedPassword"
+                        type="password"
+                        readonly
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                    <button
+                        type="button"
+                        class="input-action"
+                        id="toggleGeneratedPassword"
+                        aria-label="Show generated password"
+                    >
+                        Show
+                    </button>
+                </div>
+
+                <button type="button" id="copyPassword" class="secondary-button full-width">
+                    Copy Password
+                </button>
+
+                <p class="privacy-note">
+                    Save this generated password in a trusted password
+                    manager. It is not saved by this application.
+                </p>
+            </section>
+        </section>
+
+        <section class="education-card">
+            <h2>Security reminder</h2>
+            <p>
+                Use unique passwords for different accounts, prefer long
+                passphrases, use a password manager, and enable
+                multi-factor authentication whenever available.
+            </p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>
+            Password Strength Analyzer & Security Suggestion Tool
+        </p>
+        <p>Educational cybersecurity project · Built by Ayush Kumar Dubey</p>
+    </footer>
+</body>
+</html>
