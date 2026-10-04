@@ -10,6 +10,7 @@ Integrates:
 5. Keyboard pattern detection
 6. Repeated character and substring detection
 7. Predictable prefix, suffix, year and date detection
+8. Educational theoretical entropy estimation
 
 The strength score is an educational heuristic, not a
 cryptographic measurement.
@@ -31,6 +32,7 @@ from backend.services.repetition_analyzer import detect_repetitions
 from backend.services.predictable_pattern_analyzer import (
     detect_predictable_patterns
 )
+from backend.services.entropy_estimator import estimate_entropy
 
 
 def _calculate_strength_score(
@@ -50,6 +52,9 @@ def _calculate_strength_score(
     - Character diversity: 40
 
     Predictable patterns reduce the score.
+
+    Entropy is deliberately excluded from this formula
+    to preserve the existing scoring behavior.
     """
 
     password_length = length_result["length"]
@@ -135,7 +140,7 @@ def analyze_password(password: str) -> dict:
     if not isinstance(password, str):
         raise TypeError("Password must be a string.")
 
-    # Run all individual analysis modules.
+    # Run individual analysis modules.
     length_result = analyze_length(password)
 
     character_result = analyze_characters(password)
@@ -150,7 +155,11 @@ def analyze_password(password: str) -> dict:
 
     predictable_result = detect_predictable_patterns(password)
 
+    # Estimate theoretical entropy separately.
+    entropy_result = estimate_entropy(password)
+
     # Calculate the combined educational score.
+    # Entropy does not change this existing formula.
     score = _calculate_strength_score(
         length_result=length_result,
         character_result=character_result,
@@ -188,7 +197,8 @@ def analyze_password(password: str) -> dict:
         "sequences": sequence_result,
         "keyboard_patterns": keyboard_result,
         "repetitions": repetition_result,
-        "predictable_patterns": predictable_result
+        "predictable_patterns": predictable_result,
+        "entropy": entropy_result
     }
 
     # Collect findings and suggestions.
@@ -226,7 +236,8 @@ def analyze_password(password: str) -> dict:
         },
         "scoring_note": (
             "This score is an educational heuristic and is not a "
-            "cryptographic guarantee of password security."
+            "cryptographic guarantee of password security. The theoretical "
+            "entropy estimate is reported separately and does not affect "
+            "the strength score."
         )
     }
-
