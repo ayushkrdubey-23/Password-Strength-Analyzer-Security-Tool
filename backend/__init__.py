@@ -1,4 +1,5 @@
-from flask import Flask, jsonify
+
+from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 
 from backend.config import get_config
@@ -7,11 +8,8 @@ from backend.routes import register_routes
 
 
 def create_app():
-    """
-    Create and configure the Flask application.
-    """
+    """Create and configure the Flask application."""
 
-    # Load environment configuration.
     load_dotenv()
 
     app = Flask(__name__)
@@ -31,11 +29,40 @@ def create_app():
 
     @app.after_request
     def add_security_headers(response):
-        """Add basic security-related HTTP headers."""
+        """Add security-related HTTP response headers."""
 
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "no-referrer"
+
+        response.headers["Permissions-Policy"] = (
+            "camera=(), microphone=(), geolocation=()"
+        )
+
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+            "style-src 'self' 'unsafe-inline' https://unpkg.com; "
+            "font-src 'self' https://unpkg.com data:; "
+            "img-src 'self' data:; "
+            "connect-src 'self'; "
+            "object-src 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self'; "
+            "frame-ancestors 'none'"
+        )
+
+        # Enable HSTS only for secure HTTPS requests.
+        if request.is_secure:
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000"
+            )
+
+        # Prevent caching of API and health-check responses.
+        if request.path.startswith("/api/") or request.path == "/health":
+            response.headers["Cache-Control"] = "no-store"
 
         return response
 
@@ -45,7 +72,7 @@ def create_app():
 
         return jsonify({
             "status": "error",
-            "message": "The requested endpoint was not found."
+            "message": "The requested endpoint was not found.",
         }), 404
 
     @app.errorhandler(413)
@@ -54,7 +81,7 @@ def create_app():
 
         return jsonify({
             "status": "error",
-            "message": "Request payload exceeds the allowed size."
+            "message": "Request payload exceeds the allowed size.",
         }), 413
 
     @app.errorhandler(429)
@@ -63,20 +90,16 @@ def create_app():
 
         return jsonify({
             "success": False,
-            "error": "Too many requests. Please wait before trying again."
+            "error": "Too many requests. Please wait before trying again.",
         }), 429
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        """
-        Return a generic internal error response.
-
-        Never include submitted request data in errors.
-        """
+        """Return a generic internal error response."""
 
         return jsonify({
             "status": "error",
-            "message": "An internal server error occurred."
+            "message": "An internal server error occurred.",
         }), 500
 
     return app
