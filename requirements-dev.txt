@@ -1,0 +1,8 @@
+
+-r requirements.txt
+
+# Dependency vulnerability auditing
+pip-audit>=2.9,<3.0
+
+# Python security linting
+bandit>=1.8,<2.0
