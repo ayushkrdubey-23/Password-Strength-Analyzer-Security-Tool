@@ -1,8 +1,8 @@
-
 from flask import Flask, jsonify
 from dotenv import load_dotenv
 
 from backend.config import get_config
+from backend.extensions import limiter
 from backend.routes import register_routes
 
 
@@ -19,14 +19,19 @@ def create_app():
     # Apply centralized configuration.
     app.config.update(get_config())
 
-    # Register API routes.
+    # Enable standard rate-limit response headers.
+    app.config["RATELIMIT_HEADERS_ENABLED"] = True
+    app.config["RATELIMIT_SWALLOW_ERRORS"] = False
+
+    # Initialize rate limiting before registering routes.
+    limiter.init_app(app)
+
+    # Register API and frontend routes.
     register_routes(app)
 
     @app.after_request
     def add_security_headers(response):
-        """
-        Add basic security-related HTTP headers.
-        """
+        """Add basic security-related HTTP headers."""
 
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
@@ -36,9 +41,7 @@ def create_app():
 
     @app.errorhandler(404)
     def not_found(error):
-        """
-        Return a generic JSON 404 response.
-        """
+        """Return a generic JSON 404 response."""
 
         return jsonify({
             "status": "error",
@@ -47,14 +50,21 @@ def create_app():
 
     @app.errorhandler(413)
     def request_too_large(error):
-        """
-        Reject requests that exceed the configured size.
-        """
+        """Reject requests that exceed the configured size."""
 
         return jsonify({
             "status": "error",
             "message": "Request payload exceeds the allowed size."
         }), 413
+
+    @app.errorhandler(429)
+    def rate_limit_exceeded(error):
+        """Return a generic response when a client exceeds its limit."""
+
+        return jsonify({
+            "success": False,
+            "error": "Too many requests. Please wait before trying again."
+        }), 429
 
     @app.errorhandler(500)
     def internal_server_error(error):

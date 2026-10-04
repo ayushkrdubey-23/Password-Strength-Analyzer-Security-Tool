@@ -1,4 +1,3 @@
-
 """
 Password Analysis API Route.
 
@@ -9,6 +8,7 @@ analysis results without exposing the submitted password.
 
 from flask import Blueprint, jsonify, request
 
+from backend.extensions import limiter
 from backend.services.password_analyzer import analyze_password
 
 
@@ -16,6 +16,7 @@ analyzer_bp = Blueprint("analyzer", __name__)
 
 
 @analyzer_bp.route("/api/analyze", methods=["POST"])
+@limiter.limit("10 per minute")
 def analyze_password_api():
     """Analyze a submitted password and return security findings."""
 

@@ -1,4 +1,3 @@
-
 """
 Secure Password Generator API.
 
@@ -9,6 +8,7 @@ are never stored or logged by this endpoint.
 
 from flask import Blueprint, jsonify, request
 
+from backend.extensions import limiter
 from backend.services.password_generator import generate_password
 
 
@@ -16,6 +16,7 @@ generator_bp = Blueprint("generator", __name__)
 
 
 @generator_bp.route("/api/generate", methods=["POST"])
+@limiter.limit("10 per minute")
 def generate_password_api():
     """Generate a secure password using the supplied options."""
 
