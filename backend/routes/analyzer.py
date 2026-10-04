@@ -63,4 +63,3 @@ def analyze_password_api():
             "success": False,
             "error": "Password analysis could not be completed."
         }), 500
-    

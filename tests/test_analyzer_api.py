@@ -128,4 +128,3 @@ def test_analyzer_api_rejects_get_request(client):
     response = client.get("/api/analyze")
 
     assert response.status_code == 405
-    
